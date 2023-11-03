@@ -31,9 +31,9 @@ const User = sequelize.define('User', {
         allowNull: false
     }
 }, {
-    // Opciones del modelo (puedes agregar más opciones aquí)
+    // Opciones del modelo
     tableName: 'User', // Nombre de la tabla en la base de datos
-    timestamps: false // Si no tienes campos de fecha y hora en tu tabla
+    timestamps: false // No hay campos de fecha y hora en mi tabla
 });
 
 // Sincroniza el modelo con la base de datos (esto crea la tabla si no existe)
