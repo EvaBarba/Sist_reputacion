@@ -1,3 +1,14 @@
+var express = require('express');
+var app = express();
+app.set('view engine', 'ejs');
+var indexRouter = require('./routes/index');
+app.use('/', indexRouter);
+var path = require('path’);
+app.use(express.static(path.join(__dirname, 'public')));
+
+
+
+
 const {Sequelize, Model, DataTypes} = require('sequelize');
 const sequelize = new Sequelize("sqlite:db.sqlite", {logging:false});
 
