@@ -1,6 +1,5 @@
 const {Sequelize, Model, DataTypes} = require('sequelize');
-const sequelize =
-new Sequelize("sqlite:db.sqlite", {logging:false});
+const sequelize = new Sequelize("sqlite:db.sqlite", {logging:false});
 
 
 
