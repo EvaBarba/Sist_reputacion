@@ -1,3 +1,8 @@
+const {Sequelize, Model, DataTypes} = require('sequelize');
+const sequelize =
+new Sequelize("sqlite:db.sqlite", {logging:false});
+
+
 
 const Web3 = require('web3');
 const express = require('express');
