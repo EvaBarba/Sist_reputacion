@@ -3,6 +3,7 @@ const sequelize = new Sequelize("sqlite:db.sqlite", {logging:false});
 
 var express = require('express');
 var partials = require('express-partials');
+let session = require('express-session');
 var app = express();
 app.set('view engine', 'ejs');
 app.use('/', indexRouter);
