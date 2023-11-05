@@ -32,6 +32,7 @@ const erc20TokenContract = new web3.eth.Contract(erc20Abi, erc20Address);
 //LOGIN
 app.use(function (req, res, next) {
 
+  //Si req existe, asignar res con los valores de la sesión ralativos a ...
   res.locals.loginUser = req.session.loginUser && {
     id: req.session.loginUser.id,
     username: req.session.loginUser.username,
