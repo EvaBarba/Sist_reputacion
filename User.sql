@@ -1,8 +1,9 @@
 CREATE TABLE BBDD_reputacion.User(
-    Id_User INT AUTO_INCREMENT NOT NULL,
-    Password VARCHAR(55) NOT NULL,
-    Nombre VARCHAR(55) NOT NULL,
-    PhoneNumber VARCHAR(55),
-    Email VARCHAR(255) NOT NULL,
-    PRIMARY KEY(Id_User)
+    idUser INT AUTO_INCREMENT NOT NULL,
+    password VARCHAR(55) NOT NULL,
+    username VARCHAR(55) NOT NULL,
+    phoneNumber VARCHAR(55),
+    email VARCHAR(255) NOT NULL,
+    isAdmin BOOLEAN NOT NULL,
+    PRIMARY KEY(idUser)
     )ENGINE = InnoDB;

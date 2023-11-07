@@ -35,7 +35,7 @@ app.use(function (req, res, next) {
 
   //Si req existe, asignar res con los valores de la sesión ralativos a ...
   res.locals.loginUser = req.session.loginUser && {
-    id: req.session.loginUser.id,
+    idUser: req.session.loginUser.id,
     username: req.session.loginUser.username,
     email: req.session.loginUser.email,
     isAdmin: req.session.loginUser.isAdmin
