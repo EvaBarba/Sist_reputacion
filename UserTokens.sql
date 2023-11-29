@@ -1,7 +1,0 @@
-CREATE TABLE BBDD_reputacion.UserTokens (
-    idUser INT NOT NULL,
-    idToken INT NOT NULL,
-    PRIMARY KEY (idUser, idToken),
-    FOREIGN KEY (idUser) REFERENCES User(idUser) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (idToken) REFERENCES Token(idToken) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB;
