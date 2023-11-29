@@ -1,11 +1,7 @@
-'use strict';
-
-const {Model, DataTypes} = require('sequelize');
+const { Model, DataTypes } = require('sequelize');
 const crypt = require('../helpers/crypt');
 
-// Definition of the User model:
 module.exports = (sequelize) => {
-
     class User extends Model {
         verifyPassword(password) {
             return crypt.encryptPassword(password, this.salt) === this.password;
@@ -13,31 +9,67 @@ module.exports = (sequelize) => {
     }
 
     User.init({
-            username: {
-                type: DataTypes.STRING,
-                unique: true,
-                validate: {notEmpty: {msg: "Username must not be empty."}}
-            },
-            password: {
-                type: DataTypes.STRING,
-                validate: {notEmpty: {msg: "Password must not be empty."}},
-                set(password) {
-                    // Random String used as salt.
-                    this.salt = Math.round((new Date().valueOf() * Math.random())) + '';
-                    this.setDataValue('password', crypt.encryptPassword(password, this.salt));
+        idUser: {
+            type: DataTypes.INTEGER,
+            autoIncrement: true,
+            allowNull: false,
+            primaryKey: true
+        },
+        password: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            validate: {
+                notEmpty: {
+                    msg: "Password must not be empty."
                 }
-            },
-            salt: {
-                type: DataTypes.STRING
-            },
-            isAdmin: {
-                type: DataTypes.BOOLEAN,
-                defaultValue: false
             }
-        }, {
-            sequelize
+        },
+        username: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            unique: {
+                args: true,
+                msg: "Username must be unique."
+            },
+            validate: {
+                notEmpty: {
+                    msg: "Username must not be empty."
+                }
+            }
+        },
+        phoneNumber: {
+            type: DataTypes.STRING
+        },
+        email: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            validate: {
+                notEmpty: {
+                    msg: "Email must not be empty."
+                },
+                isEmail: {
+                    msg: "Invalid email format."
+                }
+            }
+        },
+        isAdmin: {
+            type: DataTypes.BOOLEAN,
+            allowNull: false
+        },
+        numTokens: {
+            type: DataTypes.INTEGER,
+            allowNull: false
+        },
+        salt: {
+            type: DataTypes.STRING,
+            allowNull: false
         }
-    );
+    }, {
+        sequelize,
+        modelName: 'User', // Nombre del modelo en singular
+        tableName: 'User', // Nombre de la tabla en la base de datos
+        timestamps: false // Desactivar timestamps (createdAt, updatedAt)
+    });
 
     return User;
 };

@@ -1,4 +1,4 @@
-CREATE TABLE BBDD_reputacion.User(
+CREATE TABLE BBDD_reputacion.User (
     idUser INT AUTO_INCREMENT NOT NULL,
     password VARCHAR(55) NOT NULL,
     username VARCHAR(55) NOT NULL,
@@ -6,5 +6,6 @@ CREATE TABLE BBDD_reputacion.User(
     email VARCHAR(255) NOT NULL,
     isAdmin BOOLEAN NOT NULL,
     numTokens INT NOT NULL,
-    PRIMARY KEY(idUser)
-    )ENGINE = InnoDB;
+    salt VARCHAR(255) NOT NULL,
+    PRIMARY KEY (idUser)
+) ENGINE = InnoDB;
