@@ -1,10 +1,10 @@
 
 body {
-  --primary: #2a4f03;
-  --secondary: #dfd88d;
+  --primary: rgb(66, 29, 91);
+  --secondary: #9db8e3;
   font: 16px "Lucida Grande", Helvetica, Arial, sans-serif;
   margin: 0;
-  background: white;
+  background: rgb(255, 255, 255);
   color: var(--primary);
 }
 

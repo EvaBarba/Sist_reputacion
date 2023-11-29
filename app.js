@@ -1,6 +1,7 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
+// MODULE IMPORT
+var createError = require('http-errors');         //manejar errores HTTP
+var express = require('express');                 //framework web
+var path = require('path');                       //rutas de archivos
 var favicon = require('serve-favicon');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
@@ -10,19 +11,21 @@ var partials = require('express-partials');
 
 var indexRouter = require('./routes/index');
 
+// Creation of the Express application instance
 var app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
+// Middleware configuration
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-// Configuracion de la session para almacenarla en BBDD Redis.
+// Configuration of the session to store it in Redis database
 app.use(session({secret: "Quiz 2022",
   resave: false,
   saveUninitialized: true}));
@@ -45,9 +48,10 @@ app.use(function(req, res, next) {
   next();
 });
 
+// Main router
 app.use('/', indexRouter);
 
-// catch 404 and forward to error handler
+// catch 404 and forward to error handler------------
 app.use(function(req, res, next) {
   next(createError(404));
 });
