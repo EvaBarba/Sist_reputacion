@@ -1,12 +1,23 @@
+// models/index.js
+
 const Sequelize = require('sequelize');
-const url = process.env.DATABASE_URL || "mysql://root@localhost:3306/BBDD_reputacion";
-const sequelize = new Sequelize(url);
+const config = require('../config/config');
+const { DataTypes } = require('sequelize');
+const User = require('./user'); // Manteniendo el nombre original
+const Token = require('./token');
 
-const User = require('./user')(sequelize);
-const Token = require('./token')(sequelize);
+// Accede a la configuración de desarrollo
+const sequelize = new Sequelize(config.development);
 
-// Relación 1-to-N entre User y Token
+// Relacion 1-N para user-token
 User.hasMany(Token, { as: 'tokens', foreignKey: 'userId' });
 Token.belongsTo(User, { foreignKey: 'userId' });
 
-module.exports = sequelize;
+const db = { sequelize, User, Token };
+
+// Cierra la conexión de Sequelize cuando el proceso de Node.js se cierre
+process.on('exit', () => {
+  sequelize.close();
+});
+
+module.exports = db;

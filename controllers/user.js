@@ -22,14 +22,14 @@ exports.load = async (req, res, next, userId) => {
 
 // GET /users
 exports.index = async (req, res, next) => {
-
     try {
         const findOptions = {
-            order: ['username']
+            order: ['username'],
+            include: [{ model: models.Token, as: 'tokens' }], // Incluye la relación con tokens
         };
 
         const users = await models.User.findAll(findOptions);
-        res.render('users/index', {users});
+        res.render('users/index', { users });
     } catch (error) {
         next(error);
     }
@@ -75,6 +75,7 @@ exports.create = async (req, res, next) => {
     try {
         // Save into the data base
         user = await user.save({fields: ["username", "password", "salt"]});
+        
         console.log('Success: User created successfully.');
         if (req.session.loginUser) {
             res.redirect('/users/' + user.id);

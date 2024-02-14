@@ -1,18 +1,19 @@
 // MODULE IMPORT
-var createError = require('http-errors');         //manejar errores HTTP
-var express = require('express');                 //framework web
-var path = require('path');                       //rutas de archivos
-var favicon = require('serve-favicon');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-var session = require('express-session');
-var methodOverride = require('method-override');
-var partials = require('express-partials');
+const createError = require('http-errors');
+const express = require('express');
+const path = require('path');
+const favicon = require('serve-favicon');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
+const session = require('express-session');
+const methodOverride = require('method-override');
+const partials = require('express-partials');
 
-var indexRouter = require('./routes/index');
+// Importar el modelo de Sequelize
+const db = require('./models');
 
-// Creation of the Express application instance
-var app = express();
+// Creacion de la aplicacion express
+const app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -26,18 +27,18 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 // Configuration of the session to store it in Redis database
-app.use(session({secret: "Quiz 2022",
+app.use(session({
+  secret: '1234',
   resave: false,
-  saveUninitialized: true}));
+  saveUninitialized: true
+}));
 
-app.use(methodOverride('_method', {methods: ["POST", "GET"]}));
+app.use(methodOverride('_method', { methods: ['POST', 'GET'] }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(partials());
 
-
 // Dynamic Helper:
-app.use(function(req, res, next) {
-
+app.use(function (req, res, next) {
   // To use req.loginUser in the views
   res.locals.loginUser = req.session.loginUser && {
     id: req.session.loginUser.id,
@@ -48,16 +49,21 @@ app.use(function(req, res, next) {
   next();
 });
 
-// Main router
+// Importar las rutas de tu aplicación
+const indexRouter = require('./routes/index');
+// const usersRouter = require('./routes/users'); // No necesario(?)
+
+// Main routers
 app.use('/', indexRouter);
+// app.use('/users', usersRouter);
 
 // catch 404 and forward to error handler------------
-app.use(function(req, res, next) {
+app.use((req, res, next) => {
   next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use((err, req, res, next) => {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
@@ -66,5 +72,17 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+// Sincronizar modelos con la base de datos (esto creará las tablas si no existen)
+db.sequelize.sync()
+  .then(() => {
+    console.log('La sincronización se completó correctamente.');
+    // Si se quiere añadir código a ejecutar después de la sincronización
+    // Puedes añadirlo aquí
+  })
+  .catch((error) => {
+    console.error('Error al sincronizar el modelo con la base de datos:', error);
+  });
+
 
 module.exports = app;

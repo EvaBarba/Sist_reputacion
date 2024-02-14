@@ -1,33 +1,35 @@
-const { Model, DataTypes } = require('sequelize');
+// models/token.js
 
-module.exports = (sequelize) => {
-    class Token extends Model {}
+const { Sequelize, Model, DataTypes } = require('sequelize');
+const sequelize = require('../config/database');
+const User = require('./user');
 
-    Token.init({
-        idToken: {
-            type: DataTypes.INTEGER,
-            autoIncrement: true,
-            allowNull: false,
-            primaryKey: true
-        },
-        tokenValue: {
-            type: DataTypes.STRING,
-            allowNull: false,
-            unique: {
-                args: true,
-                msg: "Token value must be unique."
-            }
-        },
-        userId: {
-            type: DataTypes.INTEGER,
-            allowNull: false
-        }
-    }, {
-        sequelize,
-        modelName: 'Token',
-        tableName: 'Token',
-        timestamps: false
-    });
+class Token extends Model {
+  // Poner algo?
+}
 
-    return Token;
-};
+
+Token.init(
+  {
+    idToken: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      autoIncrement: true,
+      primaryKey: true,
+    },
+    userId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: User, // Nombre del modelo al que se hace referencia
+        key: 'userId', // Nombre de la clave primaria en el modelo User
+      },
+    },
+  },
+  {
+    sequelize,
+    modelName: 'Token',
+  }
+);
+
+module.exports = Token;

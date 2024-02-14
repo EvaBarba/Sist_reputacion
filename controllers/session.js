@@ -1,129 +1,101 @@
 const Sequelize = require("sequelize");
-const {models} = require("../models");
-const url = require('url');
+const { models } = require("../models");
 
+const maxIdleTime = 3600000; //variable de tiempo maximo
 
-// This variable contains the maximum inactivity time allowed without 
-// making requests.
-// If the logged user does not make any new request during this time, 
-// then the user's session will be closed.
-// The value is in milliseconds.
-// 5 minutes.
-const maxIdleTime = 5*60*1000;
+// ... (otros middleware y configuraciones)
 
-
-//
-// Middleware used to destroy the user's session if the inactivity time
-// has been exceeded.
-//
-exports.deleteExpiredUserSession = (req, res, next) => {
-
-    if (req.session.loginUser ) { // There exista user's session
-        if ( req.session.loginUser.expires < Date.now() ) { // Expired
-            delete req.session.loginUser; // Logout
-            console.log('Info: User session has expired.');
-        } else { // Not expired. Reset value.
-            req.session.loginUser.expires = Date.now() + maxIdleTime;
-        }
-    }
-    // Continue with the request
-    next();
-};
-
-// Middleware: Login required.
-//
-// If the user is logged in previously then there will exists
-// the req.session.loginUser object, so I continue with the others
-// middlewares or routes.
-// If req.session.loginUser does not exist, then nobody is logged,
-// so I redirect to the login screen.
-//
+// Middleware: Login requerido.
 exports.loginRequired = function (req, res, next) {
     if (req.session.loginUser) {
         next();
     } else {
-        console.log("Info: Login required: log in and retry.");
+        console.log("Info: Se requiere inicio de sesión: inicia sesión y vuelve a intentarlo.");
         res.redirect('/login');
     }
 };
 
-// MW that allows to pass only if the logged in user is:
-// - admin
-// - or is the user to be managed.
+// Middleware que permite pasar solo si el usuario conectado es:
+// - administrador
+// - o es el usuario a gestionar.
 exports.adminOrMyselfRequired = (req, res, next) => {
-
     const isAdmin = !!req.session.loginUser?.isAdmin;
     const isMyself = req.load.user.id === req.session.loginUser?.id;
 
     if (isAdmin || isMyself) {
         next();
     } else {
-        console.log('Prohibited route: it is not the logged in user, nor an administrator.');
-        res.send(403);
+        console.log('Ruta prohibida: no es el usuario conectado ni un administrador.');
+        res.sendStatus(403);
     }
 };
 
 /*
- * User authentication: Checks that the user is registered.
+ * Autenticación de usuario: Verifica que el usuario esté registrado.
  *
- * Searches a user with the given username, and checks that
- * the password is correct.
- * If the authentication is correct, then returns the user object.
- * If the authentication fails, then returns null.
+ * Busca un usuario con el correo electrónico dado y verifica que
+ * la contraseña sea correcta.
+ * Si la autenticación es correcta, devuelve el objeto de usuario.
+ * Si la autenticación falla, devuelve null.
  */
-const authenticate = async (username, password) => {
-
-    const user = await models.User.findOne({where: {username: username}})
+const authenticate = async (email, password) => {
+    const user = await models.User.findOne({ where: { email: email } });
 
     return user?.verifyPassword(password) ? user : null;
 };
 
-
-
-// GET /login   -- Login form
+// GET /login -- Formulario de inicio de sesión
 exports.new = (req, res, next) => {
-
     res.render('session/new');
 };
 
-
-// POST /login   -- Create the session if the user authenticates successfully
+// POST /login -- Crea la sesión si el usuario se autentica correctamente
 exports.create = async (req, res, next) => {
-
-    const username = req.body.username ?? "";
+    const email = req.body.email ?? "";
     const password = req.body.password ?? "";
 
     try {
-        const user = await authenticate(username, password);
+        const user = await authenticate(email, password);
         if (user) {
-            console.log('Info: Authentication successful.');
+            console.log('Info: Autenticación exitosa.');
 
-            // Create req.session.user and save id and username fields.
-            // The existence of req.session.user indicates that the session exists.
-            // I also save the moment when the session will expire due to inactivity.
+            // Crea req.session.loginUser y guarda los campos id y email.
+            // La existencia de req.session.loginUser indica que la sesión existe.
+            // También guardo el momento en que la sesión caducará debido a la inactividad.
             req.session.loginUser = {
                 id: user.id,
-                username: user.username,
+                email: user.email,
                 isAdmin: user.isAdmin,
-                expires: Date.now() + maxIdleTime
+                expires: Date.now() + maxIdleTime,
             };
 
             res.redirect("/");
         } else {
-            console.log('Error: Authentication has failed. Retry it again.');
+            console.log('Error: La autenticación ha fallado. Vuelve a intentarlo.');
             res.render('session/new');
         }
     } catch (error) {
-        console.log('Error: An error has occurred: ' + error);
+        console.log('Error: Se ha producido un error: ' + error);
         next(error);
     }
 };
 
-
-// DELETE /login   --  Close the session
+// DELETE /login -- Cierra la sesión
 exports.destroy = (req, res, next) => {
-
     delete req.session.loginUser;
-
-    res.redirect("/login"); // redirect to login gage
+    res.redirect("/login"); // redirige a la página de inicio de sesión
 };
+
+
+// Middleware: Eliminar sesiones de usuario caducadas.
+exports.deleteExpiredUserSession = (req, res, next) => {
+    const now = Date.now();
+  
+    // Verifica si la sesión existe y si la marca de tiempo de caducidad ha pasado.
+    if (req.session && req.session.cookie && req.session.cookie.expires < now) {
+      console.log('Info: Sesión caducada. Eliminando sesión...');
+      delete req.session.loginUser;
+    }
+  
+    next();
+  };

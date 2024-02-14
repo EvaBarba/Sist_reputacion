@@ -1,30 +1,43 @@
+<div class="card">
+    <div class="card-header">
+        <h2 class="mb-0"><%= user.id ? 'Edit User' : 'New User' %></h2>
+    </div>
+    <div class="card-body">
+        <form action="<%= user.id ? '/users/' + user.id : '/users' %>" method="post" onsubmit="return forcePassword() && validPassword()">
+            <ul>
+                <li>
+                    <% if (!user.id) { %>
+                        <label for="username" class="rem">User name:</label>
+                        <input type="text" id="username" name="username" value="<%= user.username %>" autocomplete="off"/>
+                    <% } else { %>
+                        Username: <%= user.username %>
+                    <% } %>
+                </li>
 
-<h1>
-    Users
-</h1>
+                <li>
+                    <% if (!user.id) { %>
+                        <span class="text-danger">Enter the new password twice</span>
+                    <% } else { %>
+                        <span class="text-danger">Leave blank to not change the current password</span>
+                    <% } %>
+                    <ul>
+                        <li>
+                            <label for="user_password" class="rem">Password:</label>
+                            <input type="password" id="user_password" name="password" autocomplete="off"/>
+                        </li>
 
+                        <li>
+                            <label for="user_confirm_password" class="rem">Confirm Password:</label>
+                            <input type="password" id="user_confirm_password" autocomplete="off"/>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
 
-<table>
-    <% for (let user of users) { %>
-    <tr>
-        <td>
-            <a href="/users/<%= user.id %>" ><%= user.username %></a>
-            <%= user.isAdmin ? "(admin)" : "" %>
-        </td>
-        <td>
-            <% if (locals.loginUser?.isAdmin || locals.loginUser?.id === user.id) { %>
-                <a href="/users/<%= user.id %>/edit" class="button">edit</a>
-            <% } %>
-        </td>
-        <td>
-            <% if (locals.loginUser?.isAdmin || locals.loginUser?.id === user.id) { %>
-                <a href="/users/<%= user.id %>?_method=DELETE"
-                   onClick="return confirm('Delete user: <%= user.username %>');"
-                   class="button">delete</a>
-            <% } %>
-        </td>
-    </tr>
-    <%  } %>
-</table>
-
-<a href="/users/new" class="button">Create new user</a>
+            <div>
+                <button type="submit" class="btn btn-primary">Save</button>
+                <a href="/users" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
