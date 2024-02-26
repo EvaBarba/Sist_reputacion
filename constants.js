@@ -1,6 +1,6 @@
 // constants.js
 
-//Para la definición de roles
+// Role definition
 module.exports = {
-    USER_ROLES: ['Admin', 'Interprete', 'Cliente'],
+    USER_ROLES: ['admin', 'technician', 'operator', 'coordinator', 'consultant', 'interpreter'],
   };

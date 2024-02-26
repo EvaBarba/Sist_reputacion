@@ -24,7 +24,7 @@
                 <a class="nav-link" href="/users">Users</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/tokens">Tokens</a>
+                <a class="nav-link" href="/reputations">reputations</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="/author">Author</a>
@@ -33,8 +33,13 @@
         <ul class="navbar-nav ml-auto">
             <% if (!locals.loginUser) { %>
                 <li class="nav-item">
+                    <a class="nav-link" href="/singUp">Sing up</a>
+                </li>
+
+                <li class="nav-item">
                     <a class="nav-link" href="/login">Login</a>
                 </li>
+
             <% } else { %>
                 <li class="nav-item">
                     <a class="nav-link" href="/users/<%= loginUser.id %>"><%= loginUser.username %></a>

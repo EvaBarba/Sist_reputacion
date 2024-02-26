@@ -1,18 +1,18 @@
 <div class="card">
     <div class="card-header">
-        <h2 class="mb-0">Tokens</h2>
+        <h2 class="mb-0">reputations</h2>
     </div>
     <div class="card-body">
-        <% if (tokens.length > 0) { %>
+        <% if (reputations.length > 0) { %>
             <ul class="list-group">
-                <% tokens.forEach(token => { %>
+                <% reputations.forEach(reputation => { %>
                     <li class="list-group-item">
-                        <%= token.tokenValue %> - User: <%= token.User.username %>
+                        <%= reputation.reputationValue %> - User: <%= reputation.User.username %>
                     </li>
                 <% }) %>
             </ul>
         <% } else { %>
-            <p class="mb-0">No tokens found.</p>
+            <p class="mb-0">No reputations found.</p>
         <% } %>
     </div>
 </div>

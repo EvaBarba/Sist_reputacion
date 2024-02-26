@@ -4,7 +4,7 @@ var router = express.Router();
 // Importa sessionController y otras dependencias necesarias
 const sessionController = require('../controllers/session');
 const userController = require("../controllers/user");
-const tokenController = require("../controllers/token");
+const reputationController = require("../controllers/reputation");
 const checkRolesMiddleware = require('../middleware/checkRoles');
 
 // ... (otras configuraciones)
@@ -26,23 +26,23 @@ router.get('/', function (req, res, next) {
 });
 
 // Autoload
-router.param('userId', userController.load);
+router.param('user_id', userController.load);
 
 // Routes for the resource /users
 router.get('/users',
   sessionController.loginRequired,
   userController.index);
-router.get('/users/:userId(\\d+)',
+router.get('/users/:user_id(\\d+)',
   sessionController.loginRequired,
   userController.show);
 router.get('/users/new',
   userController.new);
 router.post('/users',
   userController.create);
-router.get('/users/:userId(\\d+)/edit',
+router.get('/users/:user_id(\\d+)/edit',
   sessionController.adminOrMyselfRequired,
   userController.edit);
-router.put('/users/:userId(\\d+)',
+router.put('/users/:user_id(\\d+)',
   sessionController.adminOrMyselfRequired,
   userController.update);
 router.delete('/users/:userId(\\d+)',

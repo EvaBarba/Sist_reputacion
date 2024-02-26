@@ -1,7 +1,10 @@
+// controllers/session.js
+
+//Importacion de dependencias
 const Sequelize = require("sequelize");
 const { models } = require("../models");
 
-const maxIdleTime = 3600000; //variable de tiempo maximo
+const maxIdleTime = 9000; //variable de tiempo maximo (2'5h)
 
 // ... (otros middleware y configuraciones)
 
@@ -15,9 +18,10 @@ exports.loginRequired = function (req, res, next) {
     }
 };
 
-// Middleware que permite pasar solo si el usuario conectado es:
-// - administrador
-// - o es el usuario a gestionar.
+/* Middleware que permite pasar solo si el usuario conectado es:
+*  - administrador
+*  - o es el usuario a gestionar.
+*/
 exports.adminOrMyselfRequired = (req, res, next) => {
     const isAdmin = !!req.session.loginUser?.isAdmin;
     const isMyself = req.load.user.id === req.session.loginUser?.id;
@@ -25,7 +29,7 @@ exports.adminOrMyselfRequired = (req, res, next) => {
     if (isAdmin || isMyself) {
         next();
     } else {
-        console.log('Ruta prohibida: no es el usuario conectado ni un administrador.');
+        console.log('Ruta prohibida: no es el usuario propietario ni un administrador.');
         res.sendStatus(403);
     }
 };
@@ -33,22 +37,24 @@ exports.adminOrMyselfRequired = (req, res, next) => {
 /*
  * Autenticación de usuario: Verifica que el usuario esté registrado.
  *
- * Busca un usuario con el correo electrónico dado y verifica que
- * la contraseña sea correcta.
- * Si la autenticación es correcta, devuelve el objeto de usuario.
- * Si la autenticación falla, devuelve null.
+ * Busca un usuario con el correo electrónico dado y verifica que la contraseña sea correcta.
+ *  - Si la autenticación es correcta, devuelve el objeto de usuario.
+ *  - Si la autenticación falla, devuelve null.
  */
 const authenticate = async (email, password) => {
     const user = await models.User.findOne({ where: { email: email } });
-
     return user?.verifyPassword(password) ? user : null;
 };
 
+
+
+//  RUTA PARA AUTENTICACION (login)
 // GET /login -- Formulario de inicio de sesión
 exports.new = (req, res, next) => {
     res.render('session/new');
 };
 
+//  RUTA PARA AUTENTICACION (login)
 // POST /login -- Crea la sesión si el usuario se autentica correctamente
 exports.create = async (req, res, next) => {
     const email = req.body.email ?? "";
@@ -80,6 +86,7 @@ exports.create = async (req, res, next) => {
     }
 };
 
+
 // DELETE /login -- Cierra la sesión
 exports.destroy = (req, res, next) => {
     delete req.session.loginUser;
@@ -90,12 +97,12 @@ exports.destroy = (req, res, next) => {
 // Middleware: Eliminar sesiones de usuario caducadas.
 exports.deleteExpiredUserSession = (req, res, next) => {
     const now = Date.now();
-  
+
     // Verifica si la sesión existe y si la marca de tiempo de caducidad ha pasado.
     if (req.session && req.session.cookie && req.session.cookie.expires < now) {
-      console.log('Info: Sesión caducada. Eliminando sesión...');
-      delete req.session.loginUser;
+        console.log('Info: Sesión caducada. Eliminando sesión...');
+        delete req.session.loginUser;
     }
-  
+
     next();
-  };
+};

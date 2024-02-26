@@ -1,4 +1,4 @@
-//Vamos a utilizar este MW para verificar que role tiene el user
+//Vamos a utilizar este MW para verificar que role tiene el user (PENDIENTE DE HACER)
 
 // middleware/checkRoles.js
 const { USER_ROLES } = require('../constants');

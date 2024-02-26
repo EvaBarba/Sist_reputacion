@@ -3,7 +3,7 @@
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable('Users', {
-      userId: {
+      user_id: {
         type: Sequelize.INTEGER,
         autoIncrement: true,
         allowNull: false,
@@ -21,10 +21,6 @@ module.exports = {
       username: {
         type: Sequelize.STRING,
         allowNull: false,
-        unique: {
-          args: true,
-          msg: 'Username must be unique.',
-        },
         validate: {
           notEmpty: {
             msg: 'Username must not be empty.',
@@ -41,12 +37,16 @@ module.exports = {
           notEmpty: {
             msg: 'Email must not be empty.',
           },
+          unique: {
+            args: true,
+            msg: 'Email must be unique.',
+          },
           isEmail: {
             msg: 'Invalid email format.',
           },
         },
       },
-      numTokens: {
+      numreputations: {
         type: Sequelize.INTEGER,
         allowNull: false,
       },

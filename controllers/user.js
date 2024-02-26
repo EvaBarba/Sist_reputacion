@@ -1,18 +1,21 @@
+// controllers/user.js
+
+// Importación de dependencias
 const createError = require('http-errors');
 const Sequelize = require("sequelize");
-const {models} = require("../models");
+const { models } = require("../models");
 
-// Autoload the user with id equals to :userId
-exports.load = async (req, res, next, userId) => {
-
+// Middleware para Cargar un Usuario con :id
+exports.load = async (req, res, next, id) => {
     try {
-        const user = await models.User.findByPk(userId);
+        const user = await models.User.findByPk(id);
+        // OK: Se agrega el objeto req.load
         if (user) {
             req.load = {...req.load, user};
             next();
-        } else {
-            console.log('Error: There is no user with id=' + userId + '.');
-            throw createError(404,'No exist userId=' + userId);
+        } else {    // KO: error 404
+            console.log('Error: There is no user with id=' + id + '.');
+            throw createError(404,'No exist id=' + id);
         }
     } catch (error) {
         next(error);
@@ -20,12 +23,12 @@ exports.load = async (req, res, next, userId) => {
 };
 
 
-// GET /users
+// GET (users) - Listado de Usuarios (index)
 exports.index = async (req, res, next) => {
     try {
         const findOptions = {
             order: ['username'],
-            include: [{ model: models.Token, as: 'tokens' }], // Incluye la relación con tokens
+            include: [{ model: models.reputation, as: 'reputations' }],   // Incluye la relación con reputations
         };
 
         const users = await models.User.findAll(findOptions);
@@ -35,7 +38,7 @@ exports.index = async (req, res, next) => {
     }
 };
 
-// GET /users/:userId
+// GET /users/:id - Detalles del usuario
 exports.show = (req, res, next) => {
 
     const {user} = req.load;
@@ -44,25 +47,26 @@ exports.show = (req, res, next) => {
 };
 
 
-// GET /users/new
+// GET /users/new - Crear usuario (new)
 exports.new = (req, res, next) => {
 
     const user = {
         username: "",
+        email: "",
         password: ""
     };
 
     res.render('users/new', {user});
 };
 
-
-// POST /users
+// POST /users - Crear usuario (create)
 exports.create = async (req, res, next) => {
 
-    const {username, password} = req.body;
+    const {username, email, password} = req.body;
 
     let user = models.User.build({
         username,
+        email,
         password
     });
 
@@ -72,9 +76,14 @@ exports.create = async (req, res, next) => {
         return res.render('users/new', {user});
     }
 
+    if (!email) {
+        console.log('Error: email must not be empty.');
+        return res.render('users/new', {user});
+    }
+
     try {
         // Save into the data base
-        user = await user.save({fields: ["username", "password", "salt"]});
+        user = await user.save({fields: ["username", "email", "password", "salt"]});
         
         console.log('Success: User created successfully.');
         if (req.session.loginUser) {
@@ -84,7 +93,7 @@ exports.create = async (req, res, next) => {
         }
     } catch (error) {
         if (error instanceof Sequelize.UniqueConstraintError) {
-            console.log(`Error: User "${username}" already exists.`);
+            console.log(`Error: User "${email}" already exists.`);
             res.render('users/new', {user});
         } else if (error instanceof Sequelize.ValidationError) {
             console.log('Error: There are errors in the form:');
@@ -97,7 +106,7 @@ exports.create = async (req, res, next) => {
 };
 
 
-// GET /users/:userId/edit
+// GET /users/:id/edit - Editar usuario (edit)
 exports.edit = (req, res, next) => {
 
     const {user} = req.load;
@@ -105,8 +114,7 @@ exports.edit = (req, res, next) => {
     res.render('users/edit', {user});
 };
 
-
-// PUT /users/:userId
+// PUT /users/:id  - Editar usuario (update)
 exports.update = async (req, res, next) => {
 
     const {body} = req;
@@ -124,6 +132,9 @@ exports.update = async (req, res, next) => {
         fields_to_update.push('password');
     }
 
+    //IMPLEMENTAR EL CAMBIO DEL RESTO DE DATOS
+
+
     try {
         await user.save({fields: fields_to_update});
         console.log('Success: User updated successfully.');
@@ -140,7 +151,7 @@ exports.update = async (req, res, next) => {
 };
 
 
-// DELETE /users/:userId
+// DELETE /users/:id - Eliminar usuario (destroy)
 exports.destroy = async (req, res, next) => {
 
     try {

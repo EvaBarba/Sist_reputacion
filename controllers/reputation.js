@@ -1,2 +1,2 @@
-// tokenController.js
+// reputationController.js
 const {models} = require("../models");

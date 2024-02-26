@@ -1,7 +1,7 @@
 // createDefaultUsers.js
 //Ejecutar:
 //node createDefaultUsers.js
-const { sequelize, User, Token } = require('../models');
+const { sequelize, User, reputation } = require('../models');
 
 const createDefaultUsers = async () => {
     try {
@@ -10,7 +10,7 @@ const createDefaultUsers = async () => {
             password: 'adminpassword',
             email: 'admin@example.com',
             isAdmin: true,
-            numTokens: 0,
+            numreputations: 0,
             salt: 'somesalt', // Deberías usar una función para generar un salt único
             role: 'Admin'
         });
@@ -20,7 +20,7 @@ const createDefaultUsers = async () => {
             password: 'interpreterpassword',
             email: 'interpreter@example.com',
             isAdmin: false,
-            numTokens: 0,
+            numreputations: 0,
             salt: 'somesalt', // Deberías usar una función para generar un salt único
             role: 'Interprete'
         });
@@ -30,7 +30,7 @@ const createDefaultUsers = async () => {
             password: 'clientpassword',
             email: 'client@example.com',
             isAdmin: false,
-            numTokens: 0,
+            numreputations: 0,
             salt: 'somesalt', // Deberías usar una función para generar un salt único
             role: 'Cliente'
         });

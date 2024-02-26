@@ -1,22 +1,50 @@
 // models/user.js
 
+// Dependencies
 const { Sequelize, Model, DataTypes } = require('sequelize');
 const crypt = require('../helpers/crypt');
 const sequelize = require('../config/database');
 
+// Model definition
 class User extends Model {
     verifyPassword(password) {
         return crypt.encryptPassword(password, this.salt) === this.password;
     }
 }
 
+// Model initiation
 User.init(
     {
-        userId: {
+        id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
             allowNull: false,
             primaryKey: true,
+        },
+        username: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            validate: {
+                notEmpty: {
+                    msg: 'Username must not be empty.',
+                },
+            },
+        },
+        email: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            validate: {
+                notEmpty: {
+                    msg: 'Email must not be empty.',
+                },
+                unique: {
+                    args: true,
+                    msg: 'Email must be unique.',
+                },
+                isEmail: {
+                    msg: 'Invalid email format.',
+                },
+            },
         },
         password: {
             type: DataTypes.STRING,
@@ -27,45 +55,27 @@ User.init(
                 },
             },
         },
-        username: {
-            type: DataTypes.STRING,
-            allowNull: false,
-            unique: {
-                args: true,
-                msg: 'Username must be unique.',
-            },
-            validate: {
-                notEmpty: {
-                    msg: 'Username must not be empty.',
-                },
-            },
-        },
-        phoneNumber: {
-            type: DataTypes.STRING,
-        },
-        email: {
-            type: DataTypes.STRING,
-            allowNull: false,
-            validate: {
-                notEmpty: {
-                    msg: 'Email must not be empty.',
-                },
-                isEmail: {
-                    msg: 'Invalid email format.',
-                },
-            },
-        },
-        numTokens: {
-            type: DataTypes.INTEGER,
-            allowNull: false,
-        },
         salt: {
             type: DataTypes.STRING,
             allowNull: false,
         },
-        role: {
-            type: DataTypes.ENUM('Admin', 'Interprete', 'Cliente'),
-            allowNull: false,
+        passwordUpdate: {
+            // type: DataTypes.DATETIME (PENDIENTE)
+        },
+        verifyKeyEmail: {
+            type: DataTypes.STRING
+        },
+        verifyKeyExpire: {
+            // type: DataTypes.DATATIME (PENDIENTE)
+        },
+        enabled: {
+            type: DataTypes.BOOLEAN
+        },
+        extra: {
+            type: DataTypes.JSON
+        },
+        admin_id: {
+            type: DataTypes.INTEGER
         },
     },
     {
@@ -75,4 +85,5 @@ User.init(
     }
 );
 
+// Model export
 module.exports = User;

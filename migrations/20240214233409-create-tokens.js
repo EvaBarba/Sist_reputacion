@@ -9,25 +9,37 @@ module.exports = {
     if (!userTableInfo) {
       throw new Error('La tabla Users no existe.');
     }
-    await queryInterface.createTable('Token', {
-      idToken: {
+    await queryInterface.createTable('reputation', {
+      idreputation: {
         type: Sequelize.INTEGER,
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
       },
-      userId: {
+
+      reputationValue: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true,       // El valor debe ser unico
+        validate: {
+          notEmpty: {
+            msg: 'reputation value must not be empty.',
+          },
+        },
+      },
+
+      user_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
           model: 'Users', // Nombre de la tabla en la base de datos
-        key: 'userId', // Nombre de la clave primaria en el modelo User
+          key: 'user_id', // Nombre de la clave primaria en el modelo User
         },
       },
     });
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('Tokens');
+    await queryInterface.dropTable('reputations');
   }
 };
