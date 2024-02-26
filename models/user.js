@@ -60,13 +60,13 @@ User.init(
             allowNull: false,
         },
         passwordUpdate: {
-            // type: DataTypes.DATETIME (PENDIENTE)
+            type: DataTypes.DATETIME
         },
         verifyKeyEmail: {
             type: DataTypes.STRING
         },
         verifyKeyExpire: {
-            // type: DataTypes.DATATIME (PENDIENTE)
+            type: DataTypes.DATETIME
         },
         enabled: {
             type: DataTypes.BOOLEAN

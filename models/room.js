@@ -28,7 +28,7 @@ Room.init(
             type: DataTypes.TEXT
         },
         date: {
-            //type: DataTypes.DATETIME (PENDIENTE)
+            type: DataTypes.DATETIME
         },
         language: {
             type: DataTypes.STRING
