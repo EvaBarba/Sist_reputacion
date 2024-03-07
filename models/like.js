@@ -5,7 +5,7 @@ const { Sequelize, Model, DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 const Interpreter = require('./roles/interpreter');
 const Room = require('./room');
-const constants = require('./helpers/constants');
+const constants = require('../helpers/constants.js');
 
 const rolesEnum = constants.ROLES;
 

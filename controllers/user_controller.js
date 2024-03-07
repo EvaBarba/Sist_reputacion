@@ -5,9 +5,6 @@ const createError = require('http-errors');
 var Sequelize = require("sequelize");
 var models = require('../models');
 
-var paginate = require('../helpers/paginate').paginate;
-
-
 // Autoload the user associated with :user.id
 exports.load = function (req, res, next, userId) {
 

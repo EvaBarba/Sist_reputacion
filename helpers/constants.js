@@ -9,6 +9,7 @@ const RolesEnum = {
     INTERPRETER: 'interpreter'
 };
 
+
 module.exports = {
     ROLES: RolesEnum
 };
