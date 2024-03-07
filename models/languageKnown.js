@@ -1,27 +1,28 @@
-// models/glossary.js
+// models/languageKnown.js
 
 // Dependencies
 const { Sequelize, Model, DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 
 // Model definition
-class Glossary extends Model { }
+class LanguageKnown extends Model { }
 
 // Model initiation
-Glossary.init(
+LanguageKnown.init(
     {
+        // (PENDIENTE) CAMBIAR
         id: {
             type: DataTypes.INTEGER,
-        },
-        order: {
-            type: DataTypes.STRING,
+            autoIncrement: true,
+            allowNull: false,
+            primaryKey: true,
         }
     },
     {
         sequelize,
-        modelName: 'Glossary',
+        modelName: 'LanguageKnown',
     }
 );
 
 // Model export
-module.exports = Glossary;
+module.exports = LanguageKnown;

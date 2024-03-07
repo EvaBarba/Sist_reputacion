@@ -2,7 +2,7 @@
 
 // Dependencies
 const { Sequelize, Model, DataTypes } = require('sequelize');
-const crypt = require('../helpers/crypt');
+var crypt = require('../helpers/crypt');
 const sequelize = require('../config/database');
 
 // Model definition
@@ -26,7 +26,7 @@ User.init(
             allowNull: false,
             validate: {
                 notEmpty: {
-                    msg: 'Username must not be empty.',
+                    msg: 'username must not be empty.',
                 },
             },
         },
@@ -60,13 +60,13 @@ User.init(
             allowNull: false,
         },
         passwordUpdate: {
-            type: DataTypes.DATETIME
+            type: DataTypes.DATE
         },
         verifyKeyEmail: {
             type: DataTypes.STRING
         },
         verifyKeyExpire: {
-            type: DataTypes.DATETIME
+            type: DataTypes.DATE
         },
         enabled: {
             type: DataTypes.BOOLEAN

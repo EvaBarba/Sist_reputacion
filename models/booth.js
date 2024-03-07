@@ -4,7 +4,6 @@
 const { Sequelize, Model, DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 const Room = require('./room');
-const Glossary = require('./glossary');
 
 // Model definition
 class Booth extends Model { }
@@ -36,14 +35,7 @@ Booth.init(
         speech_to_text: {
             type: DataTypes.BOOLEAN
         },
-        glossary_id: {
-            type: DataTypes.INTEGER,
-            references: {
-                model: Glossary,
-                key: Glossary.id,
-            },
-        },
-
+        
         room_id: {
             type: DataTypes.INTEGER,
             references: {

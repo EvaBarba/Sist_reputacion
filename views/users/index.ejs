@@ -1,43 +1,26 @@
+<!-- views/users/index.ejs -->
 <div class="card">
     <div class="card-header">
-        <h2 class="mb-0"><%= user.id ? 'Edit User' : 'New User' %></h2>
+        <h2 class="mb-0">List of Users</h2>
     </div>
     <div class="card-body">
-        <form action="<%= user.id ? '/users/' + user.id : '/users' %>" method="post" onsubmit="return forcePassword() && validPassword()">
-            <ul>
-                <li>
-                    <% if (!user.id) { %>
-                        <label for="username" class="rem">User name:</label>
-                        <input type="text" id="username" name="username" value="<%= user.username %>" autocomplete="off"/>
-                    <% } else { %>
-                        Username: <%= user.username %>
-                    <% } %>
-                </li>
-
-                <li>
-                    <% if (!user.id) { %>
-                        <span class="text-danger">Enter the new password twice</span>
-                    <% } else { %>
-                        <span class="text-danger">Leave blank to not change the current password</span>
-                    <% } %>
-                    <ul>
-                        <li>
-                            <label for="user_password" class="rem">Password:</label>
-                            <input type="password" id="user_password" name="password" autocomplete="off"/>
-                        </li>
-
-                        <li>
-                            <label for="user_confirm_password" class="rem">Confirm Password:</label>
-                            <input type="password" id="user_confirm_password" autocomplete="off"/>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-
-            <div>
-                <button type="submit" class="btn btn-primary">Save</button>
-                <a href="/users" class="btn btn-secondary">Cancel</a>
-            </div>
-        </form>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Email</th>
+                    <!-- Agregar columnas según los atributos-->
+                </tr>
+            </thead>
+            <tbody>
+                <% users.forEach(user => { %>
+                    <tr>
+                        <td><%= user.id %></td>
+                        <td><%= user.email %></td>
+                        <!-- Agragar atributos -->
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
     </div>
 </div>

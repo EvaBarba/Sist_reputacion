@@ -22,7 +22,7 @@ Reputation.init(
       allowNull: false,
       references: {
         model: Interpreter,     // Name of the model referred to
-        key: Interpreter.id,    // Name of the primary key in the Interpreter model
+        key: Interpreter.id,    // Name of the primary key in the interpreter model
       },
     },
     value: {

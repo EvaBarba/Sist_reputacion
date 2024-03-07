@@ -37,12 +37,12 @@
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link" href="/login">Login</a>
+                    <a class="nav-link" href="/login">Log in</a>
                 </li>
 
             <% } else { %>
                 <li class="nav-item">
-                    <a class="nav-link" href="/users/<%= loginUser.id %>"><%= loginUser.username %></a>
+                    <a class="nav-link" href="/users/<%= loginUser.id %>"><%= loginUser.email %></a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/login?_method=DELETE">Logout</a>
@@ -50,6 +50,7 @@
             <% } %>
         </ul>
     </div>
+    
 </nav>
 
 <div class="container mt-4">
